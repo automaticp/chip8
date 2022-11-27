@@ -270,12 +270,111 @@ public:
                 pc += 2;
                 break;
 
-            case 0xD000: {
+            case 0xD000:
                 // DXYN - Draw a sprite at (VX, VY)
                 // 8 pixels wide and N pixels high
                 // TODO
-            }
-            // TODO rest of opcodes
+                pc += 2;
+                break;
+
+            case 0xE000:
+                switch (
+                    Byte X = (opcode & 0x0F00) >> 8;
+                    opcode & 0x00FF
+                ) {
+                    case 0x009E:
+                        // EX9E - Skip next instr.
+                        // if key in VX is pressed
+                        pc += key[V[X]] ? 4 : 2;
+                        break;
+                    case 0x00A1:
+                        // EXA1 - Skip next instr.
+                        // if key in VX in not pressed
+                        pc += !key[V[X]] ? 4 : 2;
+                    default:
+                        assert(false && "Unknown opcode");
+                }
+                break;
+
+            case 0xF000:
+                switch (
+                    Byte X = (opcode & 0x0F00) >> 8;
+                    opcode & 0x00FF
+                ) {
+                    case 0x0007:
+                        // FX07 - Set VX to the value
+                        // of the delay timer
+                        V[X] = delay_timer;
+                        pc += 2;
+                        break;
+                    case 0x000A:
+                        // FX0A - Await the key press,
+                        // then store the key in VX
+                        // (blocking)
+
+                        // TODO: ehh, what???
+                        pc += 2;
+                        break;
+                    case 0x0015:
+                        // FX15 - Set the delay timer to VX
+                        delay_timer = V[X];
+                        pc += 2;
+                        break;
+                    case 0x0018:
+                        // FX18 - Set the sound timer to VX
+                        sound_timer = V[X];
+                        pc += 2;
+                        break;
+                    case 0x001E:
+                        // FX1E - Add VX to I (no carry)
+                        I += V[X];
+                        pc += 2;
+                        break;
+                    case 0x0029:
+                        // FX29 - Set I to the location
+                        // of the sprite for the char in VX
+
+                        // TODO
+                        pc += 2;
+                        break;
+                    case 0x0033:
+                        // FX33 - Store the binary-coded decimal
+                        // representation of VX with
+                        {
+                            Byte val{ V[X] };
+                            memory[I] = val / 100;
+                            val -= memory[I] * 100;
+                            memory[I + 1] = val / 10;
+                            val -= memory[I + 1] * 10;
+                            memory[I + 2] = val;
+                        }
+                        pc += 2;
+                        break;
+                    case 0x0055:
+                        // FX55 - Stores from V0 to VX (including)
+                        // in memory starting at address I
+                        std::memcpy(
+                            memory.data() + I,
+                            V.data(),
+                            X + 1
+                        );
+                        pc += 2;
+                        break;
+                    case 0x0065:
+                        // FX65 - Fills from V0 to VX (including)
+                        // with values from memory at address I
+                        std::memcpy(
+                            V.data(),
+                            memory.data() + I,
+                            X + 1
+                        );
+                        pc += 2;
+                        break;
+                    default:
+                        assert(false && "Unknown opcode");
+                }
+                break;
+
             default:
                 assert(false && "Unknown opcode");
         }
