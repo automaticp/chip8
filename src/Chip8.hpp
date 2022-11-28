@@ -21,6 +21,9 @@ struct Chip8Base {
     // 0x000-0x1FF - Chip8 interpreter / Internal data
     // 0x200-0xFFF - Program RAM
     std::array<Byte, 4096u> memory{};
+    std::span<Byte, 80u> fonts{
+        memory.data(), 80ull
+    };
     std::span<Byte, (0x1000-0x200)> RAM{
         memory.begin() + 0x200, memory.end()
     };
@@ -74,9 +77,12 @@ struct Chip8Base {
 class Chip8 : private Chip8Base {
 private:
     bool draw_flag{ false };
+    static const std::array<Byte, 80> fontset;
 
 public:
-    Chip8() = default;
+    Chip8() noexcept {
+        init_fontset();
+    }
 
     void emulate_cycle() noexcept {
 
@@ -368,7 +374,10 @@ public:
                         // FX29 - Set I to the location
                         // of the sprite for the char in VX
 
-                        // TODO
+                        // Fonts start at 0 address
+                        I = (fonts.data() - memory.data())
+                            + 5 * V[X];
+
                         pc += 2;
                         break;
                     case 0x0033:
@@ -424,9 +433,15 @@ public:
 
 
 
-    void load_program(std::span<Byte> program) {
+    void load_program(std::span<Byte> program) noexcept {
         std::memcpy(RAM.data(), program.data(), program.size());
     }
 
+private:
+    void init_fontset() noexcept {
+        std::memcpy(
+            memory.data(), fontset.data(), fontset.size()
+        );
+    }
 
 };
