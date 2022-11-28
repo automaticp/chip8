@@ -72,7 +72,8 @@ struct Chip8Base {
 
 
 class Chip8 : private Chip8Base {
-
+private:
+    bool draw_flag{ false };
 
 public:
     Chip8() = default;
@@ -272,8 +273,41 @@ public:
 
             case 0xD000:
                 // DXYN - Draw a sprite at (VX, VY)
-                // 8 pixels wide and N pixels high
-                // TODO
+                // 8 pixels wide and N pixels high.
+                // Set the carry flag if collision
+                // occured between any pixels.
+                {
+                    Byte X = opcode & 0x0F00 >> 8;
+                    Byte Y = opcode & 0x00F0 >> 4;
+                    Byte N = opcode & 0x000F;
+
+                    auto bits_to_bytes = [](Byte bits) {
+                        std::array<Byte, 8> bytes;
+                        for (unsigned i{ 0 }; i < bytes.size(); ++i) {
+                            bytes[i] =
+                                (bits & (0b00000001 << i)) >> i;
+                        }
+                        return bytes;
+                    };
+
+                    V[0xF] = 0;
+                    for (unsigned i{ 0 }; i < N; ++i) {
+                        auto row = bits_to_bytes(memory[I + i]);
+
+                        for (unsigned j{ 0 }; j < 8; ++j) {
+
+                            unsigned pos{
+                                (Y + i) * 64 + (X + i)
+                            };
+
+                            V[0xF] |= row[j] && frame[pos];
+
+                            frame[pos] ^= row[j];
+                        }
+                    }
+
+                }
+                draw_flag = true;
                 pc += 2;
                 break;
 
