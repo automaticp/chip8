@@ -2,6 +2,7 @@
     "name": "chip8",
     "version": "0.1",
     "dependencies": [
-        "sfml"
+        "sfml",
+        "fmt"
     ]
 }

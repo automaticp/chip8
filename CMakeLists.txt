@@ -8,5 +8,7 @@ find_package(
     CONFIG REQUIRED
 )
 
+find_package(fmt CONFIG REQUIRED)
+
 
 add_subdirectory(src)
