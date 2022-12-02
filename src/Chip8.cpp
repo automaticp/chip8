@@ -218,27 +218,27 @@ void Chip8::decode_opcode() noexcept {
             // Set the carry flag if collision
             // occured between any pixels.
             {
-                Byte X = opcode & 0x0F00 >> 8;
-                Byte Y = opcode & 0x00F0 >> 4;
-                Byte N = opcode & 0x000F;
+                Byte X = (opcode & 0x0F00) >> 8;
+                Byte Y = (opcode & 0x00F0) >> 4;
+                Byte N = (opcode & 0x000F);
 
                 auto bits_to_bytes = [](Byte bits) {
                     std::array<Byte, 8> bytes;
                     for (unsigned i{ 0 }; i < bytes.size(); ++i) {
                         bytes[i] =
-                            (bits & (0b00000001 << i)) >> i;
+                            (bits & (0b10000000 >> i)) >> (bytes.size() - i - 1);
                     }
                     return bytes;
                 };
 
                 V[0xF] = 0;
-                for (unsigned i{ 0 }; i < N; ++i) {
+                for (size_t i{ 0 }; i < N; ++i) {
                     auto row = bits_to_bytes(memory[I + i]);
 
-                    for (unsigned j{ 0 }; j < 8; ++j) {
+                    for (size_t j{ 0 }; j < 8; ++j) {
 
-                        unsigned pos{
-                            (Y + i) * 64 + (X + i)
+                        size_t pos{
+                            (V[Y] + i) * fb_width + (V[X] + j)
                         };
 
                         V[0xF] |= row[j] && frame[pos];
@@ -266,6 +266,7 @@ void Chip8::decode_opcode() noexcept {
                     // EXA1 - Skip next instr.
                     // if key in VX in not pressed
                     pc += !key[V[X]] ? 4 : 2;
+                    break;
                 default:
                     unknown_opcode(opcode);
             }
