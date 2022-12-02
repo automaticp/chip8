@@ -47,7 +47,11 @@ struct Chip8Base {
     Short pc{ 0x200 };
 
     // Screen B/W
-    std::array<Byte, 64u*32u> frame{};
+    // Width: 64px, Height: 32px
+    static constexpr size_t fb_width{ 64u };
+    static constexpr size_t fb_height{ 32u };
+    using framebuffer_t = std::array<Byte, fb_width * fb_height>;
+    framebuffer_t frame{};
 
     // Hardware timers
     Byte delay_timer{};
@@ -108,6 +112,19 @@ public:
     void load_program(std::span<Byte> program) noexcept {
         std::memcpy(RAM.data(), program.data(), program.size());
     }
+
+    using Chip8Base::framebuffer_t;
+    const framebuffer_t& framebuffer() const noexcept {
+        return frame;
+    }
+
+    bool should_draw() noexcept { return draw_flag; }
+    void reset_draw_flag() noexcept { draw_flag = false; }
+
+    Short get_opcode() const noexcept { return opcode; }
+
+    void key_press(Byte id) noexcept { key[id] = 1; }
+    void key_release(Byte id) noexcept { key[id] = 0; }
 
 private:
     void decode_opcode() noexcept;
