@@ -20,6 +20,12 @@ inline Byte rand_byte() {
     return std::uniform_int_distribution<Byte>{}(gen);
 }
 
+// LE <-> BE conversion
+inline Short byte_swap(Short val) noexcept {
+    return ((val & 0x00FF) << 8) |
+        ((val & 0xFF00) >> 8);
+}
+
 
 struct Chip8Base {
     // Total 4k of memory (0x000-0xFFF)
