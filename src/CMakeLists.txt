@@ -1,4 +1,4 @@
-file(GLOB chip8_sources *.cpp)
+file(GLOB chip8_sources CONFIGURE_DEPENDS *.cpp)
 add_executable(chip8 ${chip8_sources})
 
 target_compile_features(chip8 PRIVATE cxx_std_20)
