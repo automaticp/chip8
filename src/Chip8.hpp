@@ -6,6 +6,11 @@
 #include <cassert>
 #include <algorithm>
 #include <random>
+#include <sstream>
+#include <iomanip>
+#include <stdexcept>
+#include <string>
+#include <fmt/format.h>
 
 using Byte = unsigned char;
 using Short = std::uint16_t;
@@ -107,6 +112,9 @@ public:
 private:
     void decode_opcode() noexcept;
 
+    void unknown_opcode(Short op) {
+        throw std::runtime_error{ fmt::format("Unknown opcode: {:#06x}", opcode) };
+    }
     void init_fontset() noexcept {
         std::memcpy(
             memory.data(), fontset.data(), fontset.size()

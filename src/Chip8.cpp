@@ -37,7 +37,7 @@ void Chip8::decode_opcode() noexcept {
                     // TODO?
                     break;
                 default:
-                    assert(false && "Unknown opcode");
+                    unknown_opcode(opcode);
             }
             break;
 
@@ -90,7 +90,7 @@ void Chip8::decode_opcode() noexcept {
                     }
                     break;
                 default:
-                    assert(false && "Unknown opcode");
+                    unknown_opcode(opcode);
             }
             break;
 
@@ -173,7 +173,7 @@ void Chip8::decode_opcode() noexcept {
                     pc += 2;
                     break;
                 default:
-                    assert(false && "Unknown opcode");
+                    unknown_opcode(opcode);
             }
 
         case 0x9000:
@@ -190,7 +190,7 @@ void Chip8::decode_opcode() noexcept {
                     }
                     break;
                 default:
-                    assert(false && "Unknown opcode");
+                    unknown_opcode(opcode);
             }
             break;
 
@@ -267,7 +267,7 @@ void Chip8::decode_opcode() noexcept {
                     // if key in VX in not pressed
                     pc += !key[V[X]] ? 4 : 2;
                 default:
-                    assert(false && "Unknown opcode");
+                    unknown_opcode(opcode);
             }
             break;
 
@@ -349,12 +349,12 @@ void Chip8::decode_opcode() noexcept {
                     pc += 2;
                     break;
                 default:
-                    assert(false && "Unknown opcode");
+                    unknown_opcode(opcode);
             }
             break;
 
         default:
-            assert(false && "Unknown opcode");
+            unknown_opcode(opcode);
     }
 
 }
