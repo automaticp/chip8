@@ -129,6 +129,10 @@ public:
 
     Short get_opcode() const noexcept { return opcode; }
 
+    const decltype(V)& get_registers() const noexcept { return V; }
+    Short get_index() const noexcept { return I; }
+    Short get_pc() const noexcept { return pc; }
+
     void key_press(Byte id) noexcept { key[id] = 1; }
     void key_release(Byte id) noexcept { key[id] = 0; }
     const decltype(key)& get_keys() const noexcept { return key; }

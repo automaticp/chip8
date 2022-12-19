@@ -1,5 +1,6 @@
 #include "Canvas.hpp"
 #include "Chip8.hpp"
+#include "Disassembler.hpp"
 #include <fmt/format.h>
 #include <chrono>
 #include <ios>
@@ -109,6 +110,7 @@ int main(int argc, const char* argv[]) {
         {
             canvas.process_events(chip8);
             chip8.emulate_cycle();
+            pretty_print_state(chip8);
             // print_keypad(chip8.get_keys());
         }
 
