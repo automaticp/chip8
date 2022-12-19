@@ -30,11 +30,12 @@ void Chip8::decode_opcode() noexcept {
                 case 0x00E0:
                     // 00E0 - Clear the screen
                     std::fill(frame.begin(), frame.end(), 0);
+                    pc += 2;
                     break;
                 case 0x00EE:
                     // 00EE - Return from subroutine
                     pc = stack.pop();
-                    // TODO?
+                    pc += 2;
                     break;
                 default:
                     unknown_opcode(opcode);
