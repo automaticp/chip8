@@ -57,20 +57,24 @@ public:
 
 
     void update(const Chip8::framebuffer_t& fb) {
+        const sf::Color bg{ 0x00, 0x2B, 0x36 }; // Solarized Dark
+        const sf::Color fg{ 0x83, 0x94, 0x96 }; //
+        const sf::Color offset{ fg - bg };
+
         for (size_t i{ 0 }; i < fb.size(); ++i) {
             size_t j{ i * 4 };
 
             // RGBA
-            tex_buffer_[j + 0] = fb[i] * 0xFF;
-            tex_buffer_[j + 1] = fb[i] * 0xFF;
-            tex_buffer_[j + 2] = fb[i] * 0xFF;
+            tex_buffer_[j + 0] = bg.r + fb[i] * offset.r;
+            tex_buffer_[j + 1] = bg.g + fb[i] * offset.g;
+            tex_buffer_[j + 2] = bg.b + fb[i] * offset.b;
             tex_buffer_[j + 3] = 0xFF;
         }
         tex_.update(tex_buffer_.data());
     }
 
     void redraw() {
-        window_.clear(sf::Color{ 0u, 127u, 0u });
+        window_.clear(sf::Color{ 0u, 0u, 0u });
         window_.draw(sprite_);
         window_.display();
     }
