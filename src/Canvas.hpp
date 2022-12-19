@@ -44,7 +44,7 @@ public:
         tex_.create(Chip8Base::fb_width, Chip8Base::fb_height);
         sprite_.setTexture(tex_);
         sprite_.setScale(
-            0.9f * sf::Vector2f{ 800.f / Chip8Base::fb_width, 600.f / Chip8Base::fb_height }
+            1.0f * sf::Vector2f{ 800.f / Chip8Base::fb_width, 600.f / Chip8Base::fb_height }
         );
     }
 
