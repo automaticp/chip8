@@ -176,6 +176,7 @@ void Chip8::decode_opcode() noexcept {
                 default:
                     unknown_opcode(opcode);
             }
+            break;
 
         case 0x9000:
             switch (opcode & 0x000F) {
