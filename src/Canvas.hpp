@@ -40,6 +40,7 @@ public:
             }
         }
     {
+        window_.setKeyRepeatEnabled(false);
         tex_.create(Chip8Base::fb_width, Chip8Base::fb_height);
         sprite_.setTexture(tex_);
         sprite_.setScale(
