@@ -131,7 +131,7 @@ public:
 
     void key_press(Byte id) noexcept { key[id] = 1; }
     void key_release(Byte id) noexcept { key[id] = 0; }
-
+    const decltype(key)& get_keys() const noexcept { return key; }
 private:
     void decode_opcode() noexcept;
 

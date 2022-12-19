@@ -5,12 +5,14 @@
 #include <ios>
 #include <iterator>
 #include <thread>
+#include <cassert>
 #include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <optional>
 #include <vector>
 #include <string>
+#include <string_view>
 
 using frame = std::chrono::duration<double, std::ratio<1, 60>>;
 
@@ -56,6 +58,17 @@ void print_fb(const Chip8::framebuffer_t& fb, Short opcode) {
 }
 
 
+void print_keypad(const std::array<Byte, 16u>& keypad) {
+    thread_local std::array<char, 16u> buffer{};
+    assert(keypad.size() == buffer.size());
+    fmt::print("0123456789ABCDEF\n");
+    for (size_t i{ 0 }; i < buffer.size(); ++i) {
+        buffer[i] = keypad[i] ? 'X' : '.';
+    }
+    std::string_view sv{ buffer.begin(), buffer.end() };
+    fmt::print("{}\n", sv);
+}
+
 
 int main(int argc, const char* argv[]) {
 
@@ -96,6 +109,7 @@ int main(int argc, const char* argv[]) {
         {
             canvas.process_events(chip8);
             chip8.emulate_cycle();
+            // print_keypad(chip8.get_keys());
         }
 
 
