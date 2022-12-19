@@ -18,7 +18,7 @@ private:
         Chip8Base::fb_width * Chip8Base::fb_height * 4
     >;
     // Buffer for transforming 8bit to 32bit frame
-    tex_buffer_t tex_buffer_;
+    tex_buffer_t tex_buffer_{};
 
     sf::Texture tex_;
     sf::Sprite sprite_;

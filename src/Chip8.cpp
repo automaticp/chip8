@@ -1,4 +1,5 @@
 #include "Chip8.hpp"
+#include <cstddef>
 
 
 const std::array<Byte, 80> Chip8::fontset{
@@ -314,7 +315,7 @@ void Chip8::decode_opcode() noexcept {
 
                     // Fonts start at 0 address
                     I = (fonts.data() - memory.data())
-                        + 5 * V[X];
+                        + static_cast<std::ptrdiff_t>(5) * V[X];
 
                     pc += 2;
                     break;

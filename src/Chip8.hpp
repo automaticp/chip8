@@ -41,7 +41,7 @@ struct Chip8Base {
 
     // 15 8-bit registers V1..VE and
     // a 'carry flag' register VF
-    std::array<Byte, 16u> V;
+    std::array<Byte, 16u> V{};
 
     // Current opcode
     Short opcode{};
@@ -140,7 +140,7 @@ private:
     void decode_opcode() noexcept;
 
     void unknown_opcode(Short op) {
-        throw std::runtime_error{ fmt::format("Unknown opcode: {:#06x}", opcode) };
+        throw std::runtime_error{ fmt::format("Unknown opcode: {:#06x}", op) };
     }
     void init_fontset() noexcept {
         std::memcpy(
