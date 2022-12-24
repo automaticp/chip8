@@ -93,13 +93,8 @@ int main(int argc, const char* argv[]) {
     Chip8 chip8{};
     chip8.load_program(program.value());
 
-    auto frame_clock =
-        std::chrono::time_point_cast<frame>(
-            std::chrono::steady_clock::now()
-        );
-
     while (window.isOpen()) {
-        frame_clock =
+        auto next_frame =
             std::chrono::time_point_cast<frame>(std::chrono::steady_clock::now())
             + frame{ 1 };
 
@@ -122,7 +117,7 @@ int main(int argc, const char* argv[]) {
             chip8.reset_draw_flag();
         }
 
-        std::this_thread::sleep_until(frame_clock);
+        std::this_thread::sleep_until(next_frame);
 
     }
 
