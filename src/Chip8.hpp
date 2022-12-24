@@ -106,7 +106,9 @@ public:
 
         decode_opcode();
 
-        // Update Timers
+    }
+
+    void update_timers() noexcept {
         if (delay_timer) { --delay_timer; }
 
         if (sound_timer) {

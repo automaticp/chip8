@@ -114,6 +114,7 @@ int main(int argc, const char* argv[]) {
             // print_keypad(chip8.get_keys());
         }
 
+        chip8.update_timers();
 
         if (chip8.should_draw()) {
             canvas.update(chip8.framebuffer());
