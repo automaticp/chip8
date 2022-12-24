@@ -1,10 +1,53 @@
-#pragma once
+#include "Debug.hpp"
+
+#include "Chip8.hpp"
 #include <fmt/format.h>
 #include <string_view>
-#include <Chip8.hpp>
 
 
-inline void pretty_print_state(const Chip8& c8) {
+
+
+
+void debug::print_fb(const Chip8::framebuffer_t& fb, Short opcode) {
+
+    auto to_hex_char = [](size_t i) {
+        return "0123456789ABCDEF"[i % 0x10];
+    };
+
+    fmt::print("\n{:#06x}\n", (opcode));
+
+    const auto& fb_width = Chip8Base::fb_width;
+    std::string line_buf(fb_width, ' ');
+    fmt::print("   0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF\n\n");
+    for (size_t line{ 0 }; line < Chip8Base::fb_height; ++line) {
+        for (size_t col{ 0 }; col < line_buf.size(); ++col) {
+            size_t pos{ line * fb_width + col };
+            line_buf[col] = fb[pos] ? 'X' : '.';
+        }
+        fmt::print("{:2} {}\n", to_hex_char(line), line_buf);
+    }
+}
+
+
+
+
+
+void debug::print_keypad(const std::array<Byte, 16u>& keypad) {
+    thread_local std::array<char, 16u> buffer{};
+    assert(keypad.size() == buffer.size());
+    fmt::print("0123456789ABCDEF\n");
+    for (size_t i{ 0 }; i < buffer.size(); ++i) {
+        buffer[i] = keypad[i] ? 'X' : '.';
+    }
+    std::string_view sv{ buffer.begin(), buffer.end() };
+    fmt::print("{}\n", sv);
+}
+
+
+
+
+
+void debug::pretty_print_state(const Chip8& c8) {
 
     Short opcode = c8.get_opcode();
 

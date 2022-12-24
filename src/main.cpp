@@ -1,6 +1,6 @@
 #include "Canvas.hpp"
 #include "Chip8.hpp"
-#include "Disassembler.hpp"
+#include "Debug.hpp"
 #include <fmt/format.h>
 #include <chrono>
 #include <ios>
@@ -20,7 +20,7 @@ using frame = std::chrono::duration<double, std::ratio<1, 60>>;
 constexpr size_t cycles_per_frame{ 10 };
 
 
-std::optional<std::vector<Byte>> read_binary(const std::string& file) {
+static std::optional<std::vector<Byte>> read_binary(const std::string& file) {
 
     std::ifstream fs{ file, std::ios_base::binary };
 
@@ -37,38 +37,6 @@ std::optional<std::vector<Byte>> read_binary(const std::string& file) {
     return {};
 }
 
-
-void print_fb(const Chip8::framebuffer_t& fb, Short opcode) {
-
-    auto to_hex_char = [](size_t i) {
-        return "0123456789ABCDEF"[i % 0x10];
-    };
-
-    fmt::print("\n{:#06x}\n", (opcode));
-
-    const auto& fb_width = Chip8Base::fb_width;
-    std::string line_buf(fb_width, ' ');
-    fmt::print("   0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF0123456789ABCDEF\n\n");
-    for (size_t line{ 0 }; line < Chip8Base::fb_height; ++line) {
-        for (size_t col{ 0 }; col < line_buf.size(); ++col) {
-            size_t pos{ line * fb_width + col };
-            line_buf[col] = fb[pos] ? 'X' : '.';
-        }
-        fmt::print("{:2} {}\n", to_hex_char(line), line_buf);
-    }
-}
-
-
-void print_keypad(const std::array<Byte, 16u>& keypad) {
-    thread_local std::array<char, 16u> buffer{};
-    assert(keypad.size() == buffer.size());
-    fmt::print("0123456789ABCDEF\n");
-    for (size_t i{ 0 }; i < buffer.size(); ++i) {
-        buffer[i] = keypad[i] ? 'X' : '.';
-    }
-    std::string_view sv{ buffer.begin(), buffer.end() };
-    fmt::print("{}\n", sv);
-}
 
 
 int main(int argc, const char* argv[]) {
@@ -105,8 +73,8 @@ int main(int argc, const char* argv[]) {
         {
             canvas.process_events(chip8);
             chip8.emulate_cycle();
-            pretty_print_state(chip8);
-            // print_keypad(chip8.get_keys());
+            debug::pretty_print_state(chip8);
+            // debug::print_keypad(chip8.get_keys());
         }
 
         chip8.update_timers();
